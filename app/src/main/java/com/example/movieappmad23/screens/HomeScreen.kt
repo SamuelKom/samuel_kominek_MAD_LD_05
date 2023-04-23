@@ -13,18 +13,20 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.movieappmad23.viewmodels.MoviesViewModel
+import com.example.movieappmad23.viewmodels.HomeScreenViewModel
 import com.example.movieappmad23.widgets.HomeTopAppBar
 import com.example.movieappmad23.widgets.MovieRow
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
     navController: NavController = rememberNavController(),
-    moviesViewModel: MoviesViewModel
+    moviesViewModel: HomeScreenViewModel
 ){
     Scaffold(topBar = {
         HomeTopAppBar(
@@ -61,7 +63,7 @@ fun HomeScreen(
 fun MainContent(
     modifier: Modifier,
     navController: NavController,
-    viewModel: MoviesViewModel
+    viewModel: HomeScreenViewModel
 ) {
     MovieList(
         modifier = modifier,
@@ -74,9 +76,10 @@ fun MainContent(
 fun MovieList(
     modifier: Modifier = Modifier,
     navController: NavController,
-    viewModel: MoviesViewModel
+    viewModel: HomeScreenViewModel
 ) {
     val movieListState by viewModel.movieListState.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
 
     LazyColumn (
         modifier = modifier,
@@ -91,7 +94,9 @@ fun MovieList(
                     navController.navigate(Screen.DetailScreen.withId(movieId))
                 },
                 onFavClick  = { movie ->
-                    viewModel.updateFavoriteMovies(movie)
+                    coroutineScope.launch {
+                        viewModel.updateFavoriteMovies(movie)
+                    }
                 }
             )
         }
