@@ -50,20 +50,21 @@ fun MovieRow(
             onMovieRowClick(movie.id)
         }
         .fillMaxWidth()
-        .padding(5.dp),
-        shape = Shapes.large,
-        elevation = 10.dp
-    ) {
+        .padding(5.dp), shape = Shapes.large, elevation = 10.dp) {
         Column {
-            Box(modifier = Modifier
-                .height(150.dp)
-                .fillMaxWidth(),
+            Box(
+                modifier = Modifier
+                    .height(150.dp)
+                    .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                if(movie.images.isNotEmpty()){
+                if (movie.images.isNotEmpty()) {
                     MovieImage(imageUrl = movie.images[0])
                 } else {
-                    Image(painter = painterResource(id = R.drawable.no_image_placeholder), contentDescription = "Prev Image")
+                    Image(
+                        painter = painterResource(id = R.drawable.no_image_placeholder),
+                        contentDescription = "Prev Image"
+                    )
                 }
                 FavoriteIcon(movie, onFavClick)
             }
@@ -75,19 +76,13 @@ fun MovieRow(
 
 @Composable
 fun MovieImage(imageUrl: String) {
-    SubcomposeAsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(imageUrl)
-            .crossfade(true)
-            .build(),
+    SubcomposeAsyncImage(model = ImageRequest.Builder(LocalContext.current).data(imageUrl)
+        .crossfade(true).build(),
         contentScale = ContentScale.Crop,
         contentDescription = stringResource(id = R.string.movie_poster),
         loading = {
             CircularProgressIndicator()
-        }
-    )
-
-
+        })
 }
 
 @Composable
@@ -97,25 +92,19 @@ fun FavoriteIcon(movie: Movie, onFavClick: (Movie) -> Unit) {
         mutableStateOf(movie.isFavorite)
     }
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .padding(10.dp),
-        contentAlignment = Alignment.TopEnd
-    ){
-        Icon(
-            tint = MaterialTheme.colors.secondary,
-            imageVector =
-            if(favorite.value) {
-                Icons.Default.Favorite
-            } else {
-                Icons.Default.FavoriteBorder
-            },
-            contentDescription = "Add to favorites",
-            modifier = Modifier.clickable {
-                favorite.value = !favorite.value
-                onFavClick(movie)
-            }
-        )
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(10.dp), contentAlignment = Alignment.TopEnd
+    ) {
+        Icon(tint = MaterialTheme.colors.secondary, imageVector = if (favorite.value) {
+            Icons.Default.Favorite
+        } else {
+            Icons.Default.FavoriteBorder
+        }, contentDescription = "Add to favorites", modifier = Modifier.clickable {
+            favorite.value = !favorite.value
+            onFavClick(movie)
+        })
     }
 }
 
@@ -128,47 +117,39 @@ fun MovieDetails(modifier: Modifier = Modifier, movie: Movie) {
     }
 
     Row(
-        modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            movie.title,
-            modifier = Modifier.weight(6f),
-            style = MaterialTheme.typography.h6
+            movie.title, modifier = Modifier.weight(6f), style = MaterialTheme.typography.h6
         )
 
-        IconButton(
-            modifier = Modifier.weight(1f),
-            onClick = { expanded = !expanded }) {
-            Icon(imageVector =
-            if (expanded) Icons.Filled.KeyboardArrowDown
-            else Icons.Filled.KeyboardArrowUp,
+        IconButton(modifier = Modifier.weight(1f), onClick = { expanded = !expanded }) {
+            Icon(
+                imageVector = if (expanded) Icons.Filled.KeyboardArrowDown
+                else Icons.Filled.KeyboardArrowUp,
                 contentDescription = "expand",
-                modifier = Modifier
-                    .size(25.dp),
+                modifier = Modifier.size(25.dp),
                 tint = Color.DarkGray
             )
         }
     }
 
     AnimatedVisibility(
-        visible = expanded,
-        enter = fadeIn(),
-        exit = fadeOut()
+        visible = expanded, enter = fadeIn(), exit = fadeOut()
     ) {
-        Column (modifier = modifier) {
+        Column(modifier = modifier) {
             Text(text = "Director: ${movie.director}", style = MaterialTheme.typography.caption)
             Text(text = "Released: ${movie.year}", style = MaterialTheme.typography.caption)
-            Text(buildAnnotatedString {
-                withStyle(style = SpanStyle(color = Color.DarkGray, fontSize = 13.sp)) {
-                    append("Genres: ")
-                }
+            Text(
+                buildAnnotatedString {
+                    withStyle(style = SpanStyle(color = Color.DarkGray, fontSize = 13.sp)) {
+                        append("Genres: ")
+                    }
 
-                for ( genre in movie.genre){
-                    append("$genre ")
-                }
-                },
-                style = MaterialTheme.typography.caption
+                    for (genre in movie.genre) {
+                        append("$genre ")
+                    }
+                }, style = MaterialTheme.typography.caption
             )
             Text(text = "Actors: ${movie.actors}", style = MaterialTheme.typography.caption)
             Text(text = "Rating: ${movie.rating}", style = MaterialTheme.typography.caption)
@@ -179,7 +160,11 @@ fun MovieDetails(modifier: Modifier = Modifier, movie: Movie) {
                 withStyle(style = SpanStyle(color = Color.DarkGray, fontSize = 13.sp)) {
                     append("Plot: ")
                 }
-                withStyle(style = SpanStyle(color = Color.DarkGray, fontSize = 13.sp, fontWeight = FontWeight.Light)){
+                withStyle(
+                    style = SpanStyle(
+                        color = Color.DarkGray, fontSize = 13.sp, fontWeight = FontWeight.Light
+                    )
+                ) {
                     append(movie.plot)
                 }
             })
@@ -194,14 +179,11 @@ fun HorizontalScrollableImageView(movie: Movie) {
             Card(
                 modifier = Modifier
                     .padding(12.dp)
-                    .size(240.dp),
-                elevation = 4.dp
+                    .size(240.dp), elevation = 4.dp
             ) {
 
                 AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(image)
-                        .crossfade(true)
+                    model = ImageRequest.Builder(LocalContext.current).data(image).crossfade(true)
                         .build(),
                     contentDescription = "Movie poster",
                     contentScale = ContentScale.Crop
